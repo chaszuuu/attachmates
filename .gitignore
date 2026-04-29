@@ -1,0 +1,90 @@
+# ========== FLUTTER / DART ==========
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+.pub-cache/
+.pub/
+build/
+
+# ========== ANDROID ==========
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/.gradle
+/android/captures/
+/android/gradlew
+/android/gradlew.bat
+/android/local.properties
+/android/GeneratedPluginRegistrant.java
+*.apk
+*.aab
+
+# ========== iOS ==========
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Flutter.podspec
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/ephemeral/
+/ios/Flutter/app.flx
+/ios/Flutter/app.zip
+/ios/Flutter/flutter_assets/
+/ios/Flutter/.last_build_id
+/ios/Pods/
+/ios/.symlinks/
+ios/Runner/GeneratedPluginRegistrant.*
+
+# ========== macOS ==========
+/macos/Flutter/GeneratedPluginRegistrant.swift
+/macos/Flutter/ephemeral/
+/macos/Pods/
+
+# ========== Linux ==========
+/linux/flutter/generated_plugin_registrant.cc
+/linux/flutter/generated_plugin_registrant.h
+/linux/flutter/generated_plugins.cmake
+
+# ========== Windows ==========
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugin_registrant.h
+/windows/flutter/generated_plugins.cmake
+
+# ========== Web ==========
+/web/flutter_service_worker.js
+lib/generated_plugin_registrant.dart
+
+# ========== SECRETS / CERTS ==========
+.env
+.env.*
+*.env
+cert/
+cert.pem
+*.pem
+*.key
+*.p12
+*.jks
+secrets/
+google-services.json
+GoogleService-Info.plist
+
+# ========== IDE ==========
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.history/
+.atom/
+
+# ========== MISC ==========
+.DS_Store
+Thumbs.db
+*.swp
+*.log
+migrate_working_dir/
+.svn/
+.swiftpm/
+
+# ========== OBFUSCATION ==========
+app.*.symbols
+app.*.map.json

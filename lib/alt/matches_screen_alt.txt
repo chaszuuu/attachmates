@@ -1,0 +1,1455 @@
+import "package:flutter/material.dart";
+import "../../utils/constants.dart";
+import "package:google_fonts/google_fonts.dart";
+import "../discover/discover_screen.dart";
+import "../messages/messages_screen.dart";
+import '../profile/profile_screen.dart';
+import '../../utils/animations.dart';
+
+class MatchesScreen extends StatefulWidget {
+  const MatchesScreen({super.key});
+
+  @override
+  State<MatchesScreen> createState() => _MatchesScreenState();
+}
+
+class _MatchesScreenState extends State<MatchesScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  bool _isLoading = true;
+  String _activeFilter = "All";
+  final List<String> _filters = ["All", "New", "Favorites", "Online"];
+  
+  // Mock data for matches
+  final List<Map<String, dynamic>> _allMatches = [
+    {
+      "name": "Hanni",
+      "time": "Just now",
+      "image": "assets/images/hanni.jpg",
+      "isOnline": true,
+      "isFavorite": true,
+      "isNew": true,
+      "compatibility": 95,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Quality Time",
+    },
+    {
+      "name": "Minji",
+      "time": "15 mins ago",
+      "image": "assets/images/minji.jpg",
+      "isOnline": true,
+      "isFavorite": false,
+      "isNew": true,
+      "compatibility": 88,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Words of Affirmation",
+    },
+    {
+      "name": "Haerin",
+      "time": "5 mins ago",
+      "image": "assets/images/haerin.jfif",
+      "isOnline": false,
+      "isFavorite": true,
+      "isNew": true,
+      "compatibility": 92,
+      "attachmentStyle": "Avoidant",
+      "loveLanguage": "Words of Affirmation",
+    },
+    {
+      "name": "Danielle",
+      "time": "1 hour ago",
+      "image": "assets/images/dan.jfif",
+      "isOnline": false,
+      "isFavorite": false,
+      "isNew": true,
+      "compatibility": 85,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Acts of Service",
+    },
+    {
+      "name": "Hyein",
+      "time": "30 mins ago",
+      "image": "assets/images/hyein.jpg",
+      "isOnline": true,
+      "isFavorite": false,
+      "isNew": false,
+      "compatibility": 90,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Acts of Service",
+    },
+    {
+      "name": "LeBron",
+      "time": "33 mins ago",
+      "image": "assets/images/lebron.jpg",
+      "isOnline": false,
+      "isFavorite": false,
+      "isNew": false,
+      "compatibility": 78,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Acts of Service",
+    },
+    {
+      "name": "Anthony",
+      "time": "35 mins ago",
+      "image": "assets/images/ant.jpg",
+      "isOnline": true,
+      "isFavorite": true,
+      "isNew": false,
+      "compatibility": 82,
+      "attachmentStyle": "Avoidant",
+      "loveLanguage": "Quality Time",
+    },
+    {
+      "name": "Steph",
+      "time": "39 mins ago",
+      "image": "assets/images/steph.jpg",
+      "isOnline": false,
+      "isFavorite": false,
+      "isNew": false,
+      "compatibility": 75,
+      "attachmentStyle": "Secure",
+      "loveLanguage": "Quality Time",
+    },
+  ];
+  
+  List<Map<String, dynamic>> _filteredMatches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    
+    // Simulate loading data
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _filteredMatches = List.from(_allMatches);
+          _isLoading = false;
+        });
+      }
+    });
+  }
+  
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _applyFilter(String filter) {
+    setState(() {
+      _activeFilter = filter;
+      
+      if (filter == "All") {
+        _filteredMatches = List.from(_allMatches);
+      } else if (filter == "New") {
+        _filteredMatches = _allMatches.where((match) => match["isNew"] == true).toList();
+      } else if (filter == "Favorites") {
+        _filteredMatches = _allMatches.where((match) => match["isFavorite"] == true).toList();
+      } else if (filter == "Online") {
+        _filteredMatches = _allMatches.where((match) => match["isOnline"] == true).toList();
+      }
+    });
+  }
+  
+  void _toggleFavorite(int index) {
+    setState(() {
+      final matchId = _filteredMatches[index]["name"];
+      
+      // Find and update in the original list
+      for (int i = 0; i < _allMatches.length; i++) {
+        if (_allMatches[i]["name"] == matchId) {
+          _allMatches[i]["isFavorite"] = !_allMatches[i]["isFavorite"];
+          break;
+        }
+      }
+      
+      // Update in the filtered list
+      _filteredMatches[index]["isFavorite"] = !_filteredMatches[index]["isFavorite"];
+    });
+  }
+
+  // Add method to navigate back to Discover with animation
+  void _navigateToDiscover(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const DiscoverScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin =
+              Offset(-1.0, 0.0); // Start from left (reverse direction)
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+
+  // Add method to navigate to Messages with animation
+  void _navigateToMessages(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const MessagesScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0); // Start from right
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+
+  // Add this method to navigate to the ProfileScreen
+  void _navigateToProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ProfileScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+  
+  void _showMatchDetails(BuildContext context, Map<String, dynamic> match) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _buildMatchDetailsSheet(match),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // Set the background color for the entire scaffold to match DiscoverScreen
+      backgroundColor: Colors.grey.shade50,
+      body: Column(
+        children: [
+          // App bar
+          _buildAppBar(context),
+
+          // Tab bar
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: AppColors.primaryColor,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: AppColors.primaryColor,
+              tabs: const [
+                Tab(text: "Grid View"),
+                Tab(text: "List View"),
+              ],
+            ),
+          ),
+
+          // Filter chips
+          _buildFilterChips(),
+
+          // Matches content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Grid view
+                _isLoading ? _buildLoadingGrid() : _buildMatchesGrid(),
+                
+                // List view
+                _isLoading ? _buildLoadingList() : _buildMatchesList(),
+              ],
+            ),
+          ),
+
+          // Bottom navigation bar
+          _buildBottomNavBar(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 8),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Back button with navigation
+          GestureDetector(
+            onTap: () => _navigateToDiscover(context),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Icon(
+                Icons.chevron_left,
+                color: Colors.grey,
+                size: 28,
+              ),
+            ),
+          ),
+
+          // App logo with Indie Flower font
+          Row(
+            children: [
+              Text(
+                "AttachMates",
+                style: GoogleFonts.indieFlower(
+                  textStyle: TextStyle(
+                    color: AppColors.primaryColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                "Matches",
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+
+          // Search button
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primaryColor),
+            ),
+            child: Icon(
+              Icons.search,
+              color: AppColors.primaryColor,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChips() {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      color: Colors.white,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _filters.length,
+        itemBuilder: (context, index) {
+          final filter = _filters[index];
+          final isActive = _activeFilter == filter;
+          
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: FilterChip(
+              label: Text(filter),
+              selected: isActive,
+              onSelected: (_) => _applyFilter(filter),
+              backgroundColor: Colors.grey.shade200,
+              selectedColor: AppColors.primaryColor.withOpacity(0.2),
+              labelStyle: TextStyle(
+                color: isActive ? AppColors.primaryColor : Colors.black87,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              ),
+              checkmarkColor: AppColors.primaryColor,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingGrid() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return _buildSkeletonCard();
+      },
+    );
+  }
+  
+  Widget _buildLoadingList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return _buildSkeletonListItem();
+      },
+    );
+  }
+  
+  Widget _buildSkeletonCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Skeleton image
+          Expanded(
+            flex: 3,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              ),
+            ),
+          ),
+          
+          // Skeleton text
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 14,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    height: 10,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    height: 8,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildSkeletonListItem() {
+    return Container(
+      height: 80,
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Skeleton image
+          Container(
+            width: 80,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+            ),
+          ),
+          
+          // Skeleton text
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 14,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    height: 10,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Skeleton action
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatchesGrid() {
+    if (_filteredMatches.isEmpty) {
+      return _buildEmptyState();
+    }
+    
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: _filteredMatches.length,
+      itemBuilder: (context, index) {
+        final match = _filteredMatches[index];
+        return _buildMatchCard(match, index);
+      },
+    );
+  }
+  
+  Widget _buildMatchesList() {
+    if (_filteredMatches.isEmpty) {
+      return _buildEmptyState();
+    }
+    
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _filteredMatches.length,
+      itemBuilder: (context, index) {
+        final match = _filteredMatches[index];
+        return _buildMatchListItem(match, index);
+      },
+    );
+  }
+  
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.people_outline,
+            size: 80,
+            color: Colors.grey.shade400,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "No matches found",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _activeFilter == "All" 
+                ? "Start swiping to find new matches!"
+                : "Try changing your filter",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMatchCard(Map<String, dynamic> match, int index) {
+    return AnimatedPressable(
+      onPressed: () => _showMatchDetails(context, match),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile image with status indicator
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Profile image
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    child: Image.asset(
+                      match["image"],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  
+                  // New badge
+                  if (match["isNew"])
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          "NEW",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  
+                  // Favorite button
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => _toggleFavorite(index),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          match["isFavorite"] ? Icons.favorite : Icons.favorite_border,
+                          color: match["isFavorite"] ? Colors.red : Colors.grey,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Compatibility indicator
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "${match["compatibility"]}% Match",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Profile info
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name and online status
+                  Row(
+                    children: [
+                      Text(
+                        match["name"],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      if (match["isOnline"])
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  
+                  // Time
+                  Text(
+                    match["time"],
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 12,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 8),
+                  
+                  // Action buttons
+                  Row(
+                    children: [
+                      _buildActionButton(
+                        icon: Icons.chat_bubble_outline,
+                        onTap: () => _navigateToMessages(context),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildActionButton(
+                        icon: Icons.videocam_outlined,
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildMatchListItem(Map<String, dynamic> match, int index) {
+    return AnimatedPressable(
+      onPressed: () => _showMatchDetails(context, match),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Profile image with status indicator
+            Stack(
+              children: [
+                // Profile image
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                    image: DecorationImage(
+                      image: AssetImage(match["image"]),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                
+                // Online indicator
+                if (match["isOnline"])
+                  Positioned(
+                    bottom: 4,
+                    right: 4,
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+                  ),
+                
+                // New badge
+                if (match["isNew"])
+                  Positioned(
+                    top: 4,
+                    left: 4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        "NEW",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            
+            // Profile info
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name
+                    Text(
+                      match["name"],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    
+                    // Compatibility
+                    Text(
+                      "${match["compatibility"]}% Match",
+                      style: TextStyle(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    
+                    // Time
+                    Text(
+                      match["time"],
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Action buttons
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => _toggleFavorite(index),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      color: match["isFavorite"] 
+                          ? Colors.red.withOpacity(0.1) 
+                          : Colors.grey.shade100,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      match["isFavorite"] ? Icons.favorite : Icons.favorite_border,
+                      color: match["isFavorite"] ? Colors.red : Colors.grey,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 36,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.chat_bubble_outline,
+                    color: AppColors.primaryColor,
+                    size: 18,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildActionButton({required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: AppColors.primaryColor,
+          size: 16,
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildMatchDetailsSheet(Map<String, dynamic> match) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle bar
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 12, bottom: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          
+          // Profile image
+          Container(
+            height: 200,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(match["image"]),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: [
+                // Gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
+                      stops: const [0.6, 1.0],
+                    ),
+                  ),
+                ),
+                
+                // Close button
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.8),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                // Name and status
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  match["name"],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                if (match["isOnline"])
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Text(
+                                      "Online",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            Text(
+                              "${match["compatibility"]}% Match",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.chat_bubble_outline,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Details
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Compatibility details
+                  _buildDetailSection(
+                    title: "Compatibility",
+                    content: Column(
+                      children: [
+                        _buildCompatibilityBar(
+                          label: "Overall",
+                          percentage: match["compatibility"] / 100,
+                          color: AppColors.primaryColor,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildCompatibilityBar(
+                          label: "Attachment Style",
+                          percentage: 0.85,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildCompatibilityBar(
+                          label: "Love Language",
+                          percentage: 0.90,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Relationship preferences
+                  _buildDetailSection(
+                    title: "Relationship Preferences",
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildPreferenceItem(
+                          label: "Attachment Style",
+                          value: match["attachmentStyle"],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildPreferenceItem(
+                          label: "Love Language",
+                          value: match["loveLanguage"],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Action buttons
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildDetailActionButton(
+                          icon: Icons.favorite_border,
+                          label: "Like",
+                          color: Colors.red,
+                          onTap: () {},
+                        ),
+                        _buildDetailActionButton(
+                          icon: Icons.chat_bubble_outline,
+                          label: "Message",
+                          color: AppColors.primaryColor,
+                          onTap: () => _navigateToMessages(context),
+                        ),
+                        _buildDetailActionButton(
+                          icon: Icons.videocam_outlined,
+                          label: "Video Call",
+                          color: Colors.blue,
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDetailSection({required String title, required Widget content}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          content,
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildCompatibilityBar({
+    required String label,
+    required double percentage,
+    required Color color,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              "${(percentage * 100).toInt()}%",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Stack(
+          children: [
+            // Background
+            Container(
+              height: 8,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            // Progress
+            Container(
+              height: 8,
+              width: MediaQuery.of(context).size.width * percentage * 0.8, // Adjust for padding
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildPreferenceItem({required String label, required String value}) {
+    return Row(
+      children: [
+        Container(
+          width: 120,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildDetailActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 24,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Update the _buildBottomNavBar method to navigate to the ProfileScreen
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () => _navigateToDiscover(context),
+            child: _buildNavItem(Icons.search, "Discover", false),
+          ),
+          _buildNavItem(Icons.favorite, "Matches", true),
+          GestureDetector(
+            onTap: () => _navigateToMessages(context),
+            child: _buildNavItem(Icons.chat_bubble_outline, "Messages", false,
+                hasBadge: true),
+          ),
+          GestureDetector(
+            onTap: () => _navigateToProfile(context),
+            child: _buildNavItem(Icons.person_outline, "Profile", false),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, bool isActive,
+      {bool hasBadge = false}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Stack(
+          children: [
+            Icon(
+              icon,
+              color: isActive ? AppColors.primaryColor : Colors.grey,
+              size: 24,
+            ),
+            if (hasBadge)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: isActive ? AppColors.primaryColor : Colors.grey,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+}

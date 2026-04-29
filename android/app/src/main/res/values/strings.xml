@@ -1,0 +1,9 @@
+<!-- front_end/android/app/src/main/res/values/strings.xml -->
+<resources>
+    <string name="app_name">AttachMates</string>
+
+    <!-- Facebook Login config -->
+    <string name="facebook_app_id">1450979919495510</string>
+    <string name="facebook_client_token">fe7ea935f061865edae9583506cb4e43</string>
+    <string name="fb_login_protocol_scheme">fb1450979919495510</string>
+</resources>

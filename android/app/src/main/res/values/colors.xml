@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 🎨 Brand Colors — match your Flutter AppColors -->
+    <color name="primary">#B5276A</color>        <!-- AppColors.primaryColor -->
+    <color name="light_pink">#FAE3F0</color>     <!-- AppColors.lightPink -->
+    <color name="soft_rose">#F06292</color>      <!-- AppColors.softRose -->
+
+    <!-- ⚪ Neutrals -->
+    <color name="white">#FFFFFFFF</color>        <!-- AppColors.white -->
+    <color name="black">#212121</color>          <!-- AppColors.black87 -->
+    <color name="grey">#9E9E9E</color>           <!-- AppColors.grey -->
+    <color name="grey_300">#E0E0E0</color>       <!-- AppColors.grey300 -->
+    <color name="grey_400">#BDBDBD</color>       <!-- AppColors.grey400 -->
+
+    <!-- 🌈 Material Theme Support Colors -->
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="primary_variant">#9E1F5A</color>
+    <color name="secondary">#FAE3F0</color>
+    <color name="on_secondary">#FF000000</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="on_background">#FF000000</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="on_surface">#FF000000</color>
+    <color name="error">#B00020</color>
+    <color name="on_error">#FFFFFFFF</color>
+
+    <!-- 🧭 System Bar Colors (optional) -->
+    <color name="status_bar">#B5276A</color>
+    <color name="nav_bar">#FFFFFFFF</color>
+
+</resources>
