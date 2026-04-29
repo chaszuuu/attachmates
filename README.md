@@ -98,7 +98,7 @@ The algorithm prioritizes emotional compatibility and filters out incompatible p
 |---|---|
 | Mobile (Android) | Flutter 3.x / Dart 3.x |
 | Backend API | Python / FastAPI |
-| AI / ML Matching | Python — custom hybrid recommendation model |
+| AI / ML Matching | Python — OpenAI Text Embedding |
 | Authentication | Firebase Authentication |
 | Database | Firebase Firestore |
 | Media Storage | Supabase Storage |
