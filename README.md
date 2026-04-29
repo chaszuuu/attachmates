@@ -51,31 +51,31 @@ Whether you're securely attached, anxiously bonded, or somewhere in between, Att
 
 ## Features
 
-### 🧠 Built-in Psychological Assessment
+### Built-in Psychological Assessment
 Users complete two in-app assessments before matching: the **LoveByte Test** (Adult Attachment Style Scale) to identify their attachment style, and **The Five Love Languages Test** to determine how they give and receive love. These results form the core of every match.
 
-### 🤝 AI-Powered Hybrid Matching
+### AI-Powered Hybrid Matching
 AttachMates uses a hybrid recommendation system combining **rule-based filtering** (psychological profiles) and **content-based recommendations** (user preferences) to generate personalized, emotionally compatible match suggestions. Matches only occur when both users mutually like each other.
 
-### 💑 Attachment Style Profiling
+### Attachment Style Profiling
 Based on Bowlby and Ainsworth's Attachment Theory, the app identifies where each user falls across four styles — **Secure, Anxious, Avoidant, and Disorganized** — and uses this as a foundational signal in the matching algorithm.
 
-### 💬 Private & Secure Messaging
+### Private & Secure Messaging
 Matched users can communicate through text, photos, and short voice messages. All media is securely stored and managed via **Supabase Storage**.
 
-### 🔍 Orientation-Based Filtering
+### Orientation-Based Filtering
 Users can filter potential matches by gender identity and sexual orientation, making the platform inclusive and personalized.
 
-### 🪪 Safe Match Verification
+### Safe Match Verification
 A manual ID review process confirms user identity, prevents fake profiles, and builds trust across the platform.
 
-### 🔄 Regular Reassessment
+### Regular Reassessment
 The app periodically prompts users to retake assessments, ensuring that match recommendations reflect their current emotional state and preferences.
 
-### 🔒 Privacy First
+### Privacy First
 Firebase Authentication and Firestore security rules protect all user data. A server-side blocklist prevents blocked profiles from appearing on either end. No data is sold to third parties, and users can delete their profile at any time.
 
-### 😮‍💨 Minimized Dating Fatigue
+### Minimized Dating Fatigue
 By focusing on psychological compatibility over endless swiping, AttachMates surfaces fewer but more meaningful matches — reducing the burnout that commonly comes with traditional dating apps.
 
 ---
