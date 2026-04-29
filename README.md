@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/attachmates_logo.jpg" alt="Attachmates Logo" width="180"/>
+  <img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/logo.jpg" alt="Attachmates Logo" width="180"/>
   <h1>AttachMates</h1>
   <p><strong>Psychology-powered dating — because real connections start with emotional understanding.</strong></p>
 
