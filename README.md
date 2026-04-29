@@ -29,7 +29,7 @@ Whether you're securely attached, anxiously bonded, or somewhere in between, Att
 <div align="center">
 
 ### Splash & Auth
-<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/splash.jpg" alt="Splash Screen" width="250"/>
+<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/splash_screen.jpg" alt="Splash Screen" width="250"/>
 <img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/auth.jpg" alt="Auth Screen" width="250"/>
 
 ### Compatibility Quiz
