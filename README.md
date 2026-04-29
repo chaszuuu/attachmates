@@ -41,9 +41,9 @@ Whether you're securely attached, anxiously bonded, or somewhere in between, Att
 <img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/matches.jpg" alt="Matches" width="250"/>
 
 ### Messages & Profile
-<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/messages" alt="Messages" width="250"/>
-<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/convo" alt="Conversation" width="250"/>
-<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/profile" alt="Profile" width="250"/>
+<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/messages.jpg" alt="Messages" width="250"/>
+<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/convo.jpg" alt="Conversation" width="250"/>
+<img src="https://raw.githubusercontent.com/chaszuuu/attachmates/main/assets/UI/profile.jpg" alt="Profile" width="250"/>
 
 </div>
 
