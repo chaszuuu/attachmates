@@ -234,12 +234,6 @@ Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) befo
 
 ---
 
-## License
-
-This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
-
----
-
 ## Contact
 
 Built with love (and psychology) by [@chaszuuu](https://github.com/chaszuuu).
